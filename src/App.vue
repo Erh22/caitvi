@@ -1,7 +1,7 @@
 <template lang="pug">
   #app
     HeaderLayout
-    .container(class="mx-auto my-4 flex flex-col gap-6 relative min-h-[1200px]")
+    .container(class="mx-auto my-4 flex flex-col gap-6 relative min-h-[1200px] px-8")
       .column-selector.mb-4
         el-checkbox-group(v-model="selectedColumns")
           el-checkbox(
@@ -13,7 +13,6 @@
       el-table(
         ref="dataTable"
         :data="caitviList"
-        height="1500px"
         border
         stripe
         style="width: max-content; table-layout: fixed;"
@@ -22,7 +21,7 @@
           v-if="selectedColumns.includes('no')"
           prop="no"
           label=""
-          width="40"
+          width="46"
         )
         el-table-column(
           v-if="selectedColumns.includes('name')"
@@ -222,6 +221,8 @@ export default {
           return 'info';
         case 'DROPPED':
           return 'danger';
+        case 'READING':
+          return 'warning';
       }
     },
     getCompletedStatusColor(completed) {
@@ -230,11 +231,13 @@ export default {
         case 'COMPLETED':
           return 'success';
         case 'WORK_IN_PROGRESS':
-          return 'info';
+          return 'warning';
         case 'DISCONTINUED':
           return 'danger';
         case 'ONE_SHOT':
-          return 'warning';
+          return '';
+        case 'STATUS_UNKNOWN':
+          return 'info';
       }
     },
     // 通用的篩選方法(作者、狀態、閱讀)
@@ -265,6 +268,10 @@ export default {
 </script>
 
 <style>
+#app {
+  height: 100vh;
+  height: 100dvh;
+}
 .code-input .el-textarea__inner {
   height: 120px;
 }
