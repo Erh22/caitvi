@@ -17,14 +17,16 @@ export default {
     }
   },
   mounted() {
-    this.audio = new Audio('/sound/caitviep8.mp3');
+    const basePath = process.env.NODE_ENV === 'production' ? '/caitvi' : '';
+    this.audio = new Audio(`${basePath}/sound/caitviep8.mp3`);
   },
   methods: {
    // 播放音效
    async playSound() {
      try {
        if (!this.audio) {
-         this.audio = new Audio('/sound/caitviep8.mp3');
+          const basePath = process.env.NODE_ENV === 'production' ? '/caitvi' : '';
+          this.audio = new Audio(`${basePath}/sound/caitviep8.mp3`);
        }
        await this.audio.play();
      } catch (error) {
