@@ -12,7 +12,6 @@ export const getList = async () => {
   try {
     const response = await axios.get(SHEETS_URL);
     const rows = response.data.values || [];
-    console.log('rows', rows);
     
     // 假設第一行是標題
     return rows.slice(1).map(row => ({
@@ -37,8 +36,8 @@ export const getList = async () => {
       rate: row[11],
       
       // 其他信息
-      storySetting: row[12],
-      comments: row[13],
+      memo: row[12],
+      storySetting: row[13],
       hotChapters: row[14]
     }));
   } catch (error) {

@@ -23,6 +23,8 @@
           label=""
           width="46"
         )
+          template(#default="scope")
+            span(class="whitespace-nowrap") {{ scope.row.no }}
         el-table-column(
           v-if="selectedColumns.includes('name')"
           prop="name"
@@ -45,7 +47,7 @@
         el-table-column(
           v-if="selectedColumns.includes('chapters')"
           label="章節"
-          width="100"
+          width="80"
         )
           template(#default="scope")
             span {{ scope.row.completedChapters }} / {{ scope.row.allChapters }}
@@ -66,19 +68,35 @@
           :filters="[{ text: CONST_COMMON.completedStatus.COMPLETED, value: 'COMPLETED' }, { text: CONST_COMMON.completedStatus.WORK_IN_PROGRESS, value: 'WORK_IN_PROGRESS' }, { text: CONST_COMMON.completedStatus.ONE_SHOT, value: 'ONE_SHOT'}, { text: CONST_COMMON.completedStatus.DISCONTINUED, value: 'DISCONTINUED'}]"
         )
           template(#default="scope")
-            el-tag(effect="dark" :type="getCompletedStatusColor(scope.row.completed)") {{ CONST_COMMON.completedStatus[scope.row.completed] }}
+            el-tag(effect="dark" :type="getCompletedStatusColor(scope.row.completed)" class="rounded-full") {{ CONST_COMMON.completedStatus[scope.row.completed] }}
         el-table-column(
           v-if="selectedColumns.includes('lastUpdated')"
           prop="lastUpdated"
           label="最後一次更新"
           width="120"
         )
-        //- el-table-column(
-        //-   v-if="selectedColumns.includes('tags')"
-        //-   prop="tags"
-        //-   label="標籤"
-        //-   width="200"
-        //- )
+        el-table-column(
+          v-if="selectedColumns.includes('tags')"
+          prop="tags"
+          label="標籤"
+          width="200"
+          :filters="tagList.map(tag => ({ text: tag.name, value: tag.name }))"
+          :filter-method="filterTags"
+        )
+          template(#default="scope")
+            .flex.flex-wrap.gap-2(v-if="scope.row.tags.length > 0")
+              el-tooltip(
+                v-for="tag, index in scope.row.tags"
+                :key="index"
+                :content="tag.name"
+                effect="dark"
+                placement="top"
+              )
+                el-tag(
+                  :color="tag.color"
+                  :effect="tag.effect"
+                  class="rounded-full"
+                ) {{ tag.name }}
         el-table-column(
           v-if="selectedColumns.includes('read')"
           label="閱讀"
@@ -97,8 +115,8 @@
           template(#default="scope")
             el-rate(v-model="scope.row.rate" disabled)
         el-table-column(
-          v-if="selectedColumns.includes('comments')"
-          prop="comments"
+          v-if="selectedColumns.includes('storySetting')"
+          prop="storySetting"
           label="簡介/心得"
           width="400"
         )
@@ -112,7 +130,7 @@
 </template>
 
 <script>
-import { getList } from './api/friendCodes';
+import { getList } from './api/common';
 import { CONST_COMMON } from './constants/common'
 import HeaderLayout from './components/HeaderLayout.vue'
 import FooterLayout from './components/FooterLayout.vue'
@@ -127,10 +145,28 @@ export default {
       CONST_COMMON,
       caitviList: [],
       tagColorList: [
-        '#DDEB9D',
-        '#A0C878',
-        '#27667B',
-        '#143D60',
+        { color: '#DDEB9D', effect: 'plain' },
+        { color: '#A0C878', effect: 'plain' },
+        { color: '#27667B', effect: 'dark' },
+        { color: '#143D60', effect: 'dark' },
+        { color: '#042A2B', effect: 'dark' },
+        { color: '#316E75', effect: 'dark' },
+        { color: '#5EB1BF', effect: 'plain' },
+        { color: '#CDEDF6', effect: 'plain' },
+        { color: '#EF7B45', effect: 'plain' },
+        { color: '#D84727', effect: 'dark' },
+        { color: '#041E2B', effect: 'dark' },
+        { color: '#315A75', effect: 'dark' },
+        { color: '#5E96BF', effect: 'plain' },
+        { color: '#CCE2F6', effect: 'plain' },
+        { color: '#B96A7C', effect: 'dark' },
+        { color: '#9F3D60', effect: 'dark' },
+        { color: '#B4B8AB', effect: 'plain' },
+        { color: '#657577', effect: 'dark' },
+        { color: '#153243', effect: 'dark' },
+        { color: '#1F3F53', effect: 'dark' },
+        { color: '#284B63', effect: 'dark' },
+        { color: '#8EA2A6', effect: 'plain' }
       ],
       availableColumns: [
         { prop: 'no', label: '編號' },
@@ -142,7 +178,7 @@ export default {
         { prop: 'lastUpdated', label: '最後一次更新' },
         { prop: 'read', label: '閱讀' },
         { prop: 'rate', label: '評分' },
-        { prop: 'comments', label: '簡介/心得' },
+        { prop: 'storySetting', label: '簡介/心得' },
         { prop: 'tags', label: '標籤' },
         { prop: 'hotChapters', label: 'hot' },
       ],
@@ -153,8 +189,7 @@ export default {
         'chapters',
         'wordCount',
         'completed',
-        'rate',
-        'comments',
+        'storySetting',
         'tags',
       ],
       wordCountFilters: [
@@ -165,7 +200,8 @@ export default {
         { text: '100,001~150,000', value: '100001-150000' },
         { text: '150,001~200,000', value: '150001-200000' },
         { text: '>200,000', value: '200001-' }
-      ]
+      ],
+      tagList: [],
     }
   },
   computed: {
@@ -205,9 +241,45 @@ export default {
       const data = await getList();
       this.caitviList = data.map(item => ({
         ...item,
-        rate: Number(item.rate) || 0  // 如果轉換失敗則默認為 0
+        rate: Number(item.rate) || 0
       }));
-      console.log('caitviList', this.caitviList);
+      const allTags = this.caitviList
+        .map(item => item.tags)
+        .filter(tags => tags)
+        .flatMap(tags => tags.split(','))
+        .map(tag => tag.trim())
+        .filter(tag => tag);
+     
+      const uniqueTags = [...new Set(allTags)]
+        .sort((a, b) => {
+          const isAPartOf = a.startsWith('Part of');
+          const isBPartOf = b.startsWith('Part of');
+
+          if (isAPartOf && !isBPartOf) return 1;
+          if (!isAPartOf && isBPartOf) return -1;
+
+          return a.localeCompare(b);
+        });
+     
+      this.tagList = uniqueTags.map((tag, index) => {
+        const colorInfo = this.tagColorList[index % this.tagColorList.length];
+        return {
+          name: tag,
+          color: colorInfo.color,
+          effect: colorInfo.effect
+        };
+      });
+
+      this.caitviList = this.caitviList.map(item => ({
+       ...item,
+       tags: item.tags
+         ? item.tags
+             .split(',')
+             .map(tag => tag.trim())
+             .filter(tag => tag)
+             .map(tag => this.tagList.find(t => t.name === tag))
+         : []
+      }));
     },
     openUrl(url) {
       window.open(url, '_blank');
@@ -254,6 +326,10 @@ export default {
         return wordCount > min;
       }
     },
+    // 標籤篩選
+    filterTags(value, row) {
+      return row.tags.some(tag => tag.name === value);
+    },
     refreshTable() {
       this.$nextTick(() => {
         if (this.$refs.dataTable) {
@@ -277,5 +353,18 @@ export default {
 }
 .el-rate__icon {
   margin-right: 0;
+}
+.el-tag {
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.el-tag--dark {
+  border-color: transparent;
+}
+.el-tag--plain {
+  border-color: transparent;
+  color: #000;
 }
 </style>
