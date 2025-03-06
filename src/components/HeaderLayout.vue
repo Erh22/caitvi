@@ -17,14 +17,14 @@ export default {
     }
   },
   mounted() {
-    this.audio = new Audio('/sound/caitvi.mp4');
+    this.audio = new Audio('/sound/caitvi.mp3');
   },
   methods: {
    // 播放音效
    async playSound() {
      try {
        if (!this.audio) {
-         this.audio = new Audio('/sound/caitvi.mp4');
+         this.audio = new Audio('/sound/caitvi.mp3');
        }
        await this.audio.play();
      } catch (error) {
