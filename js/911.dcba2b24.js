@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkcaitvi"]=self["webpackChunkcaitvi"]||[]).push([[911],{4911:function(t,e,n){n.r(e),n.d(e,{default:function(){return c}});var r=function(){var t=this,e=t._self._c;return e("div",{staticClass:"flex flex-row justify-center items-center bg-current h-[150px] relative bottom-0"},[e("span",{staticClass:"text-white"},[t._v("Copyright ©"+t._s((new Date).getFullYear())+" h2")])])},s=[],a={name:"FooterLayout"},i=a,l=n(1656),u=(0,l.A)(i,r,s,!1,null,null,null),c=u.exports}}]);
+//# sourceMappingURL=911.dcba2b24.js.map
