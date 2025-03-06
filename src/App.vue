@@ -132,13 +132,11 @@
 <script>
 import { getList } from './api/common';
 import { CONST_COMMON } from './constants/common'
-import HeaderLayout from './components/HeaderLayout.vue'
-import FooterLayout from './components/FooterLayout.vue'
 export default {
   name: 'App',
   components: {
-    HeaderLayout,
-    FooterLayout,
+    HeaderLayout: () => import('./components/HeaderLayout.vue'),
+    FooterLayout: () => import('./components/FooterLayout.vue'),
   },
   data() {
     return {
@@ -343,15 +341,12 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 #app {
   height: 100vh;
   height: 100dvh;
 }
-.code-input .el-textarea__inner {
-  height: 120px;
-}
-.el-rate__icon {
+::v-deep .el-rate__icon {
   margin-right: 0;
 }
 .el-tag {
