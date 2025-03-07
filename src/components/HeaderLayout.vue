@@ -55,3 +55,8 @@ export default {
   }
 }
 </script>
+<style scoped>
+i:active {
+  scale: 0.9;
+}
+</style>
