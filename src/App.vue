@@ -237,10 +237,12 @@ export default {
   methods: {
     async initList() {
       const data = await getList();
-      this.caitviList = data.map(item => ({
-        ...item,
-        rate: Number(item.rate) || 0
-      }));
+      this.caitviList = data
+        .filter(item => item.no && item.name && item.url)
+        .map(item => ({
+          ...item,
+          rate: Number(item.rate) || 0
+        }));
       const allTags = this.caitviList
         .map(item => item.tags)
         .filter(tags => tags)
@@ -361,5 +363,10 @@ export default {
 .el-tag--plain {
   border-color: transparent;
   color: #000;
+}
+@media screen and (max-width: 1024px) {
+  .el-table {
+    font-size: 12px;
+  }
 }
 </style>
