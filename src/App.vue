@@ -143,28 +143,32 @@ export default {
       CONST_COMMON,
       caitviList: [],
       tagColorList: [
-        { color: '#DDEB9D', effect: 'plain' },
-        { color: '#A0C878', effect: 'plain' },
-        { color: '#27667B', effect: 'dark' },
+        // 藍色系
         { color: '#143D60', effect: 'dark' },
-        { color: '#042A2B', effect: 'dark' },
-        { color: '#316E75', effect: 'dark' },
-        { color: '#5EB1BF', effect: 'plain' },
-        { color: '#CDEDF6', effect: 'plain' },
-        { color: '#EF7B45', effect: 'plain' },
-        { color: '#D84727', effect: 'dark' },
+        { color: '#153243', effect: 'dark' },
         { color: '#041E2B', effect: 'dark' },
         { color: '#315A75', effect: 'dark' },
         { color: '#5E96BF', effect: 'plain' },
-        { color: '#CCE2F6', effect: 'plain' },
-        { color: '#B96A7C', effect: 'dark' },
+        { color: '#5EB1BF', effect: 'plain' },
+        { color: '#CDEDF6', effect: 'plain' },
+
+        // 綠色系
+        { color: '#042A2B', effect: 'dark' },
+        { color: '#27667B', effect: 'dark' },
+        { color: '#316E75', effect: 'dark' },
+        { color: '#A0C878', effect: 'plain' },
+        { color: '#DDEB9D', effect: 'plain' },
+
+        // 紅色系
         { color: '#9F3D60', effect: 'dark' },
-        { color: '#B4B8AB', effect: 'plain' },
+        { color: '#B96A7C', effect: 'dark' },
+        { color: '#D84727', effect: 'dark' },
+        { color: '#EF7B45', effect: 'plain' },
+
+        // 灰色系
         { color: '#657577', effect: 'dark' },
-        { color: '#153243', effect: 'dark' },
-        { color: '#1F3F53', effect: 'dark' },
-        { color: '#284B63', effect: 'dark' },
-        { color: '#8EA2A6', effect: 'plain' }
+        { color: '#8EA2A6', effect: 'plain' },
+        { color: '#B4B8AB', effect: 'plain' }
       ],
       availableColumns: [
         { prop: 'no', label: '編號' },
