@@ -21,7 +21,7 @@
           v-if="selectedColumns.includes('no')"
           prop="no"
           label=""
-          width="46"
+          width="55"
         )
           template(#default="scope")
             span(class="whitespace-nowrap") {{ scope.row.no }}
