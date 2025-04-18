@@ -16,7 +16,7 @@ export const getList = async () => {
     // 假設第一行是標題
     return rows.slice(1).map(row => ({
       // 基本信息
-      no: row[0],
+      no: Number(row[0]) || row[0],
       name: row[1],
       url: row[2],
       author: row[3],

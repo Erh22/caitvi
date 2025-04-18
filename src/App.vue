@@ -20,8 +20,9 @@
         el-table-column(
           v-if="selectedColumns.includes('no')"
           prop="no"
-          label=""
+          label="no"
           width="55"
+          sortable
         )
           template(#default="scope")
             span(class="whitespace-nowrap") {{ scope.row.no }}
@@ -113,13 +114,20 @@
           width="120"
         )
           template(#default="scope")
-            el-rate(v-model="scope.row.rate" disabled)
+            el-tooltip(
+              :content="scope.row.rate"
+              placement="top"
+              effect="dark"
+            )
+              el-rate(v-model="scope.row.rate" disabled)
         el-table-column(
           v-if="selectedColumns.includes('storySetting')"
           prop="storySetting"
           label="簡介/心得"
           width="400"
         )
+          template(#default="scope")
+            span(v-html="formatStorySetting(scope.row.storySetting)")
         el-table-column(
           v-if="selectedColumns.includes('hotChapters')"
           prop="hotChapters"
@@ -342,6 +350,14 @@ export default {
           this.$refs.dataTable.store.updateAllSelected();
         }
       });
+    },
+    formatStorySetting(text) {
+      if (!text) return '';
+      const formattedText = text.replace(
+        /<a href="([^"]+)"[^>]*>([^<]+)<\/a>/g, 
+        '<a href="$1" target="_blank" class="text-blue-500">$2</a>'
+      );
+      return formattedText;
     }
   }
 }
